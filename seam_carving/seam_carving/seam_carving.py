@@ -1,44 +1,121 @@
+# Author Nils von Norsinski
+
 import matplotlib.pyplot as plt
 import imageio
 import numpy as np
-import tkinter as tk
-from tkinter import *
+import scipy.misc
 
 
 class seamCarving:
+    """
+    This class implements seam carving, descriped her
+    https://perso.crans.org/frenoy/matlab2012/seamcarving.pdf
+    It calculates an energy matrix to find path of lowest importance and delete those pixels using dynamic programming
+    Parameters
+    ----------
+    image_path: str
+
+    Attributes
+    ----------
+    image : ndarray
+        image read from given path
+    energyPic : ndarray
+        energy matrix
+    cutImage : ndarray
+        cuttet image
+    seamImage : ndarray
+        Image to plot the seam image
+
+    Methods
+    -------
+    plot()
+        plot given image and original.
+    deleteNSeams()
+        delete given number of seams. Works only colum wise.
+    calcDiff()
+        calculate energy matrix
+    searchSeam()
+        searches seam to delete
+
+    """
+
+
     def __init__(self, image_path):
+        """
+        Parameters
+        ----------
+        image_path : str
+            Path to image
+        """
         self.__image = imageio.imread(image_path)
-        self.original = self.__image
-        #self.__image_shape = self.__image.shape
-       # self.__energy_pic = np.zeros(shape=((self.__image_shape[0], self.__image_shape[1])), dtype=np.int)
-        self.__energy_pic = self.__calcDiff(self.__image)
-        self.cutImage = self.__searchSeam(self.__image, self.__energy_pic)
+        # could be private but was set to public to use class own plot method to show the image
+        self.energyPic = self.__calcDiff(self.__image)
+        self.cutImage = self.__searchSeam(self.__image, self.energyPic)
+        # This variable will hold the seam image to plot it
+        self.seamImage = np.zeros(self.__image.shape)
+
 
 
     def plot(self, image):
-        # plt.figure('Bilder')
-        # plt.imshow(image, cmap='gray')
-        # plt.title('Normal')
-        # plt.show()
+        """
+        Plot a given image in comparison to originall image.
+        Parameters
+        ----------
+        image : numpy.ndarray
+            image to plot
+
+        Returns
+        -------
+        None
+        """
 
         plt.figure('Bilder')
         plt.subplot(221)
-        plt.imshow(image)
+        plt.imshow(image, cmap='gray')
         plt.title('beschnitten')
 
         plt.subplot(222)
-        plt.imshow(self.original)
+        plt.imshow(self.__image)
         plt.title('Normal')
 
         plt.show()
 
 
     def deleteNSeams(self, n):
-        for i in range(0, n):
-            self.cutImage = self.__searchSeam(self.cutImage, self.__energy_pic)
+        """
+        Delete n seams from original, write result to disk and call plot.
+        Parameters
+        ----------
+        n : int
+            How many seams should be removed?
+
+        Returns
+        -------
+        None
+        """
+
+        for i in range(1, n-1):
+            self.cutImage = self.__searchSeam(self.cutImage, self.energyPic)
+        # write result to disk
+        scipy.misc.imsave('outfile.jpg', self.cutImage)
+        self.plot(self.cutImage)
 
 
     def __calcDiff(self, image):
+        """
+        Calculate energy matrix for given image
+
+        Parameters
+        ----------
+        image : ndarray
+            image from which the energy matrix will be calculated.
+
+        Returns
+        -------
+        ndarray
+            Returns energy matrix
+
+        """
         image_shape = image.shape
 
         # calculate difference along x axis
@@ -46,8 +123,8 @@ class seamCarving:
         # convert to larger datatype because of coming addition and squaring of entrys
         diffx = diffx.astype(np.uint32)
         diffx = diffx ** 2
-        # sum for rgb
         diffx = np.sum(diffx, axis=2)
+        # sum for rgb
 
         # padding -> add colum for border handling
         difxr = image[:, image_shape[1] - 1] - image[:, 0]
@@ -59,12 +136,12 @@ class seamCarving:
         difxr = np.reshape(difxr, (1, image_shape[0]))
         energyX = np.concatenate((diffx, difxr.T), axis=1)
 
+
         # same thing for y-direction
         diffy = np.diff(image, axis=0)
         diffy = diffy.astype(np.uint32)
-        diffy = diffy ** 2
-
         diffy = np.sum(diffy, axis=2)
+        diffy = diffy ** 2
 
         difyr = image[image_shape[0] - 1, :] - image[0, :]
         difyr = difyr.astype(np.uint32)
@@ -82,8 +159,24 @@ class seamCarving:
         energy = energy.astype(np.uint8)
         return energy
 
-
     def __searchSeam(self, image, energy_pic):
+        """
+        Search the seam to delete, by caluclating the lowest energy path for each colum and then backtrace from pixel
+        with lowest energy.
+        Parameters
+        ----------
+        image :ndarray
+            image from which the seam will be removed
+        energy_pic : ndarray
+            The energy matrix
+
+        Returns
+        -------
+        ndarray
+            Returns the cutet image
+
+        """
+
         image_shape = image.shape
         seamImage = np.zeros((image_shape[0], image_shape[1]), dtype=np.int)
 
@@ -91,14 +184,19 @@ class seamCarving:
 
         # copy first row
         seamImage[:][0] = energy_pic[:][0]
+
         lowEnergyPath = []
 
-
         # claculate energy for each row
-        for i in range(1, rows - 1):
-            for j in range(1, cols - 2):
-                seamImage[i][j] = energy_pic[i][j] + min(seamImage[i - 1][j - 1], seamImage[i - 1][j],
-                                                            seamImage[i - 1][j + 1])
+        for i in range(1, rows):
+            for j in range(0, cols):
+                if j == 0:
+                    seamImage[i][j] = energy_pic[i][j] + min(seamImage[i - 1][j], seamImage[i-1][j+1])
+                elif j == cols-1:
+                    seamImage[i][j] = energy_pic[i][j] + min(seamImage[i - 1][j], seamImage[i - 1][j - 1])
+                else:
+                    seamImage[i][j] = energy_pic[i][j] + min(seamImage[i - 1][j - 1], seamImage[i - 1][j],
+                                                                seamImage[i - 1][j + 1])
 
         # coordinate of point of lowest energy
         cordX = np.argmin(seamImage[:][rows-1])
@@ -110,13 +208,13 @@ class seamCarving:
         # coordinates of pixels to delete
         lowPixelCoord = []
 
-        # add first lowest coordinates
+        # store seam image in class variable. This is only necessary to plot the seam image
+        self.seamImage = seamImage
 
         # backtrace
         for i in range(rows-1, -1, -1):
             # works like top statement in stack
             j, k = lowEnergyPath[-1]
-
             if j >=1 and j <= cols-2 and seamImage[i][j-1] <= seamImage[i][j] and \
                     seamImage[i][j-1] <= seamImage[i][j+1]:
                 newX = j-1
@@ -152,10 +250,10 @@ class seamCarving:
         splitImage = np.dsplit(image, 3)
 
         # cut energy matrix
-        self.__energy_pic = np.delete(self.__energy_pic, lowPixelCoord)
-        self.__energy_pic = np.reshape(self.__energy_pic, (rows, cols - 1))
+        self.energyPic = np.delete(self.energyPic, lowPixelCoord)
+        self.energyPic = np.reshape(self.energyPic, (rows, cols - 1))
 
-        # delete pixels in every rgb channel and recombine these
+        # delete pixels in every rgb channel and recombine these. Loop does not work?
         splitImage[0] = np.delete(splitImage[0], lowPixelCoord)
         splitImage[1] = np.delete(splitImage[1], lowPixelCoord)
         splitImage[2] = np.delete(splitImage[2], lowPixelCoord)
@@ -165,31 +263,28 @@ class seamCarving:
 
         cutImage = np.dstack((splitImage[0], splitImage[1]))
         cutImage = np.dstack((cutImage, splitImage[2]))
+
         return cutImage
 
 
-# properties
+# ---------------------------------------------------------------------------------
+def test():
+    # picture_path = '20160728_144930.jpg'
+    # picture_path = '20150521_115436.jpg'
 
-picture_path = '20160728_144930.jpg'
-picture_path = '20150521_115436.jpg'
+    picture_path: str = "Unbenannt.png"
+    numberSeams: int = 3
 
-P = seamCarving(picture_path)
 
-P.deleteNSeams(50)
-P.plot(P.cutImage)
+    P = seamCarving(picture_path)
+    P.deleteNSeams(numberSeams)
+    P.plot(P.energyPic)
+    P.plot(P.seamImage)
+    #P.plot(P.cutImage)
 
-#
-# from PIL import Image, ImageTk
-# plt.show()
-# root = Tk()
-# #root = tk.tk()
-#
-# img = ImageTk.PhotoImage(image=Image.fromarray(P.cutImage))
-#
-# panel = tk.Label(root, image = img)
-# print(panel.winfo_height())
-# panel.pack(side = "bottom", fill = "both", expand = "yes")
-#
-# print(panel.winfo_height())
-# root.mainloop()
 
+    # ---------------------------------------------------------------------
+
+if __name__ == '__main__': test()
+
+# ---------------------------------------------------------------------
