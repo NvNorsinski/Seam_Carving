@@ -94,7 +94,7 @@ class seamCarving:
         None
         """
 
-        for i in range(1, n-1):
+        for _ in range(1, n-1):
             self.cutImage = self.__searchSeam(self.cutImage, self.energyPic)
         # write result to disk
         scipy.misc.imsave('outfile.jpg', self.cutImage)
@@ -214,7 +214,7 @@ class seamCarving:
         # backtrace
         for i in range(rows-1, -1, -1):
             # works like top statement in stack
-            j, k = lowEnergyPath[-1]
+            j, _ = lowEnergyPath[-1]
             if j >=1 and j <= cols-2 and seamImage[i][j-1] <= seamImage[i][j] and \
                     seamImage[i][j-1] <= seamImage[i][j+1]:
                 newX = j-1
@@ -272,7 +272,7 @@ def test():
     # picture_path = '20160728_144930.jpg'
     # picture_path = '20150521_115436.jpg'
 
-    picture_path: str = "Unbenannt.png"
+    picture_path: str = 'Unbenannt.png'
     numberSeams: int = 3
 
 
