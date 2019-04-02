@@ -1,1 +1,0 @@
-from seam_carving import seamCarving
