@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Test/.idea/Test.iml" filepath="$PROJECT_DIR$/../Test/.idea/Test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../GitHub/gscpy/.idea/gscpy.iml" filepath="$PROJECT_DIR$/../GitHub/gscpy/.idea/gscpy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/seamCarving.iml" filepath="$PROJECT_DIR$/.idea/seamCarving.iml" />
+    </modules>
+  </component>
+</project>
