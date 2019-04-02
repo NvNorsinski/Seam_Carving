@@ -7,7 +7,6 @@ and y-direction. Then the path of lowest energy in y-direction is searched by us
 
 ## Author
 * **Nils v. Norsinski**
-K
 ---
 
 > GitHub [@NvNorsinski](https://github.com/NvNorsinski)
