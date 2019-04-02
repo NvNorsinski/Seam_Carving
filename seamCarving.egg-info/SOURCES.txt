@@ -1,8 +1,0 @@
-seamCarving.egg-info/PKG-INFO
-seamCarving.egg-info/SOURCES.txt
-seamCarving.egg-info/dependency_links.txt
-seamCarving.egg-info/requires.txt
-seamCarving.egg-info/top_level.txt
-seam_carving/__init__.py
-seam_carving/seam_carving.py
-seam_carving/window.py
