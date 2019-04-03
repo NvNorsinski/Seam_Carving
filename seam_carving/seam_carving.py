@@ -275,7 +275,7 @@ def test():
     picture_path: str = 'Unbenannt.png'
     numberSeams: int = 3
 
-   # numberSeams = int(input("Enter number of Seams to delete: "))
+    # numberSeams = int(input("Enter number of Seams to delete: "))
 
 
     P = Seam_carving(picture_path)
@@ -287,3 +287,5 @@ def test():
 # ---------------------------------------------------------------------
 
 if __name__ == '__main__': test()
+
+#----------------------------------------------------------------------
