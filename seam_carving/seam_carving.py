@@ -53,6 +53,7 @@ class Seam_carving:
         # could be private but was set to public to use class own plot method to show the image
         self.energyPic = self.__calcDiff(self.__image)
         self.cutImage = self.__searchSeam(self.__image, self.energyPic)
+
         # This variable will hold the seam image to plot it
         self.seamImage = np.zeros(self.__image.shape)
 
@@ -219,6 +220,7 @@ class Seam_carving:
         for i in range(rows-1, -1, -1):
             # works like top statement in stack
             j, _ = lowEnergyPath[-1]
+            # check borders and which pixel has smallest value
             if j >=1 and j <= cols-2 and seamImage[i][j-1] <= seamImage[i][j] and \
                     seamImage[i][j-1] <= seamImage[i][j+1]:
                 newX = j-1
@@ -246,6 +248,7 @@ class Seam_carving:
 
             # determine position of pixel to delete in flattened array
             posFlat = (i * cols) + newX
+            # faltten to delete
             lowPixelCoord.append(posFlat)
 
             lowEnergyPath.append(cordMin)
@@ -257,12 +260,9 @@ class Seam_carving:
         self.energyPic = np.delete(self.energyPic, lowPixelCoord)
         self.energyPic = np.reshape(self.energyPic, (rows, cols - 1))
 
-        # delete pixels in every rgb channel and recombine these. Loop does not work?
-        splitImage[0] = np.delete(splitImage[0], lowPixelCoord)
-        splitImage[1] = np.delete(splitImage[1], lowPixelCoord)
-        splitImage[2] = np.delete(splitImage[2], lowPixelCoord)
-
-        for i in range(0, len(splitImage)):
+        # delete pixels in every rgb channel and recombine these.
+        for i in range(0, 3):
+            splitImage[i] = np.delete(splitImage[i], lowPixelCoord)
             splitImage[i] = np.reshape(splitImage[i], (rows, cols - 1))
 
         cutImage = np.dstack((splitImage[0], splitImage[1]))
@@ -273,24 +273,24 @@ class Seam_carving:
 
 # ---------------------------------------------------------------------------------
 def test():
-    # picture_path = '20160728_144930.jpg'
-    # picture_path = '20150521_115436.jpg'
+
+    image = '20150521_115436.jpg'
     # picture_path = input("Path and name of image: ")
 
-    image: str = 'Unbenannt.png'
+   # image: str = 'Unbenannt.png'
     picture_path = Path.cwd()
     picture_path = picture_path.parent
     picture_path = picture_path / 'images/input' / image
 
 
-    numberSeams: int = 3
+    numberSeams: int = 5
 
     # numberSeams = int(input("Enter number of Seams to delete: "))
 
 
     P = Seam_carving(picture_path)
     P.deleteNSeams(numberSeams)
-    #P.plot(P.energyPic)
+    P.plot(P.energyPic)
     P.plot(P.seamImage)
     #P.plot(P.cutImage)
 
