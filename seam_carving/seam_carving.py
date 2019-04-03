@@ -5,6 +5,7 @@ import imageio
 import numpy as np
 import scipy.misc
 import sys
+from pathlib import Path
 
 
 class Seam_carving:
@@ -97,7 +98,11 @@ class Seam_carving:
         for _ in range(1, n-1):
             self.cutImage = self.__searchSeam(self.cutImage, self.energyPic)
         # write result to disk
-        scipy.misc.imsave('outfile.jpg', self.cutImage)
+        picture_path = Path.cwd()
+        picture_path = picture_path.parent
+        picture_path = picture_path / 'images/output/out.jpg'
+
+        scipy.misc.imsave(picture_path, self.cutImage)
         self.plot(self.cutImage)
 
     def __calcDiff(self, image):
@@ -272,7 +277,12 @@ def test():
     # picture_path = '20150521_115436.jpg'
     # picture_path = input("Path and name of image: ")
 
-    picture_path: str = 'Unbenannt.png'
+    image: str = 'Unbenannt.png'
+    picture_path = Path.cwd()
+    picture_path = picture_path.parent
+    picture_path = picture_path / 'images/input' / image
+
+
     numberSeams: int = 3
 
     # numberSeams = int(input("Enter number of Seams to delete: "))

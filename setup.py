@@ -1,13 +1,13 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name='seamCarving',
-    version='',
+    version='1',
     packages=['seam_carving'],
     url='',
     license='',
     author='Nils von Norsinski',
     author_email='',
     description='implements seam carving',
-    install_requires=['matplotlib', 'numpy', 'imageio', 'scipy']
+    install_requires=['matplotlib', 'numpy', 'scipy', 'imageio']
 )
