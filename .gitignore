@@ -1,7 +1,6 @@
 # Compiled python modules.
 *.pyc
 
-*.py
 
 # Setuptools distribution folder.
 /dist/
@@ -10,4 +9,5 @@
 *.egg-info/
 .pytest_cache/
 
-**/seam_carving/outfile.jpg
+**images/output/*.jpg
+

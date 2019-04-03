@@ -88,6 +88,37 @@ It calculates an energy matrix to find path of lowest importance and delete thos
 
 </dd></dl>
 
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">seam_carving.seam_carving.</code><code class="descname">Seam_carving</code><span class="sig-paren">(</span><em>image_path</em><span class="sig-paren">)</span></dt>
+<dd><p>This class implements seam carving, described by Shai Adivan et al. 2007.
+It calculates an energy matrix to find path of lowest importance and delete those pixels using dynamic programming.</p>
+<dl class="docutils">
+<dt>image_path: str</dt>
+<dd>Path to image</dd>
+</dl>
+<dl class="docutils">
+<dt>__image <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>image read from given path</dd>
+<dt>energyPic <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>energy matrix</dd>
+<dt>cutImage <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>cuttet image</dd>
+<dt>seamImage <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>Image to plot the seam image</dd>
+</dl>
+<dl class="docutils">
+<dt>plot()</dt>
+<dd>plot given image and original.</dd>
+<dt>deleteNSeams()</dt>
+<dd>delete given number of seams. Works only colum wise.</dd>
+<dt>calcDiff()</dt>
+<dd>calculate energy matrix</dd>
+<dt>searchSeam()</dt>
+<dd>searches seam to delete</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 

@@ -8,7 +8,7 @@
     <orderEntry type="module" module-name="gscpy" />
   </component>
   <component name="PackageRequirementsSettings">
-    <option name="requirementsPath" value="" />
+    <option name="requirementsPath" value="C:\Users\Nils-Laptop\Documents\seamCarving\requirements.txt" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="myDocStringFormat" value="NumPy" />
