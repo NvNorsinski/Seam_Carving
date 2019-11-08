@@ -283,7 +283,7 @@ def test():
     picture_path = picture_path / 'images/input' / image
 
 
-    numberSeams: int = 5
+    numberSeams: int = 20
 
     # numberSeams = int(input("Enter number of Seams to delete: "))
 
