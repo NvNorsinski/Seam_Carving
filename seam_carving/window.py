@@ -3,6 +3,8 @@ import seam_carving
 from PIL import Image, ImageTk
 from pathlib import Path
 
+# show the seam carved image, the energy image an the image showing the differences between pixels
+
 class Window(tk.Tk):
     def __init__(self, picture_path):
         tk.Tk.__init__(self)
